@@ -1,0 +1,26 @@
+IAM(Identity Access Management)
+
+To provide users the Authentication and Authorization in AWS we use IAM
+
+In IAM we do four things creating users,groups,roles and policies
+
+users -
+
+      Creating user to enter in to AWS where we are creating authentication.
+
+policies -
+
+      We provided access to aws by creating user but what if user need to access the services in the aws there comes the use of policies where we define the user with the policies.
+      if define that user need to have access for s3bucket then they can create,delete and edit that buckets.
+
+groups -
+
+      We create groups to reduce the repetative process of assigning policies when ever new user is created
+      For example if you have Developer,QA and DB teams in your organization
+      policies for all the team members are same example DB need acccess for all the DB's in Aws then you can create one group my defineing that policies and just add the new user to that group
+
+Roles -
+
+    Any Service or any tool need access to aws services to get some information then we create the roles , we assign policies to roles. Roles are not permanent.
+
+Not only AWS defined policies but we can also customize our own polices by writing json code 
