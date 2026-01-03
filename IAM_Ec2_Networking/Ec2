@@ -1,0 +1,10 @@
+Elastic Cloud Compute
+
+Ec2 is a virtual machine created on the physical server
+
+where you can scale up and down based on demand and you only pay for what you use 
+and when you stop the ec2 machine the public ip address of the machine changes which is dynamic.
+
+If you are creating ec2 with elastic Ip address then if you stop the machine also Ip will not be changed.
+
+
