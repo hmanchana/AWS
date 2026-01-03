@@ -1,0 +1,48 @@
+Cloud - AWS - Its like city
+
+Virtual Private Cloud -
+
+	In a cloud you are creating your own private space where you can put computers(servers),databases and apps.	
+        Its like your Home in the city	
+
+Internet Gateway -
+
+	IG is used to connect from Internet to the Public Subnet inside a VPC
+
+Subnet -
+	
+	People also refer it as isolated
+	Subnet splits the VPC network into smaller networks
+	Its like Rooms your Home
+	which helps to organize,reduce traffic,increase security and reduce latency
+
+	 Public Subnet -
+
+	   Public subnet is part of network and can be accessible from the Internet
+
+	 Private Subnet -
+
+	   Private Subnet is part of network and cannot be accessible from the Internet
+
+Route Table -
+
+	Route table is like a map which tells the network where to go it associated with the subnets
+	Its like maps 
+
+NACL [Network Access Contol List] - 
+
+	NACL is rules attached to the subnet(Public or Private) to allow and deny into subnet based on the Ip addresses, port and protocol
+        It work at the subnet level
+
+Security Group -
+
+	SG are rules attached to particular instance or resource it controls who can access that insatance based on the Ip addresses, port and protocol
+
+NAT Gateway [Network Address Tranfer] - 
+
+	NAT Gateway is used to connect your instances from Private Subnet to Internet (for updates,downloads and api calls)
+	NAT Gateway helps you convert your private Ip to Public Ip to connect to internet
+	It does not expose your Ip to internet in that way
+
+
+
