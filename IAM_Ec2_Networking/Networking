@@ -44,5 +44,10 @@ NAT Gateway [Network Address Tranfer] -
 	NAT Gateway helps you convert your private Ip to Public Ip to connect to internet
 	It does not expose your Ip to internet in that way
 
+Route 53 -
+
+When we want to access any of the website we cannot access it through the ip address and we cannot remember the ipaddress 
+so we create the DNS and map that with the Ip address, So AWS provide that service of creation DNS and we can buy that from AWS
+
 
 
