@@ -49,5 +49,7 @@ Route 53 -
 When we want to access any of the website we cannot access it through the ip address and we cannot remember the ipaddress 
 so we create the DNS and map that with the Ip address, So AWS provide that service of creation DNS and we can buy that from AWS
 
+Network Interface -
 
+	A Network Interface is the virtual network card that lets your AWS resource (like EC2) connect to your VPC network using its IP address and security rules.
 
