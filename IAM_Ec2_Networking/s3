@@ -1,0 +1,19 @@
+s3 is storage account in the AWS where it acts as a pendrive and harddisk to our laptop
+
+we can store any type in the s3 like pictures,videos,excel
+
+Any file you store in s3 is called an object
+
+and s3 provides 5 advantages Availability & Durability, Scalability, Security , Cost Effective , Performance 
+
+Availabiliby - When you store one object in s3 aws by default that object is replicated in multiple places
+So its 99.99999999999% Reliable 
+
+Scalability - So you can store unlimited data in one bucket but each object should not be more than 5TB. 
+But you can choose multipart upload to upload an object is size is more than 5 TB
+
+Security - you can define your own policies of who can access the bucket
+
+Cost Effective - Cost is very less
+
+S3 is globally accessible we can do versioning of files and host the static websites.

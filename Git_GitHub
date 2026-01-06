@@ -1,0 +1,52 @@
+Git is a version control tool which tracks your changes especially code.
+GitHub is a website/service that stores Git repositories online. So that you can work as team.
+
+To Start with Git
+
+If you are in windows
+
+1. Goto official Git page and download package and install it
+
+If you are in Mac
+
+1. brew install git
+
+2. git --version
+-- Check for Git Version
+
+3. git config --global user.name "your name"
+   git config --global user.email "your email"
+-- Set your identity it uses for your commits
+
+4. git config --list
+-- To check list
+
+5. git init
+-- It initializes the git in the folder you ran
+
+6. git add . - To add all files 
+   git add <file_name>
+-- To add all files from your working directory to staging area
+
+7. git commit -m "comment"
+-- To add your file from staging area to local repository
+
+8. git remote add origin https://github.com/username/folder
+-- For the inital push to GitHub our local git need to understand where to push 
+for that we need to create one folder in GitHub and add that path and run the command
+
+9. git push -u origin main
+-- So that changes are pushed to main branch of git hub
+
+10. git pull origin main
+   [ It is combination of git fetch --downloads the latest changes from remote& git merge --It merges them into your current branch]
+-- To pull the latest changes from GitHub to local repository Git
+
+Scenario 1 - If dev1 and dev2 are working on the same file where dev1 downloaded the file from git and done the changes and commited the code at the same time dev2 changed the same file when they try to pull the changes and git will not understand what changes to keep and it creates a merge conflict.
+
+To resolve that -
+
+
+
+
+
