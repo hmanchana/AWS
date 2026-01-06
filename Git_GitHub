@@ -44,7 +44,9 @@ for that we need to create one folder in GitHub and add that path and run the co
 
 Scenario 1 - If dev1 and dev2 are working on the same file where dev1 downloaded the file from git and done the changes and commited the code at the same time dev2 changed the same file when they try to pull the changes and git will not understand what changes to keep and it creates a merge conflict.
 
+
 To resolve that - i used that
+
 
 
 
