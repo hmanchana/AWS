@@ -44,8 +44,37 @@ for that we need to create one folder in GitHub and add that path and run the co
 
 Scenario 1 - If dev1 and dev2 are working on the same file where dev1 downloaded the file from git and done the changes and commited the code at the same time dev2 changed the same file when they try to pull the changes and git will not understand what changes to keep and it creates a merge conflict.
 
+the run below 
 
-To resolve that - i used that
+11. git config pull.rebase true
+
+12. Goto conflicted file keep what required and if both are required then keep both
+
+<<<<<<< HEAD
+your changes
+=======
+their changes
+>>>>>>> feature-branch
+
+then remove the special characters and run
+
+13. git rebase --continue
+--  It shows if there are still conflicts If no changes to do then come out of the file
+
+14. git push
+-- It reolves the conflict
+
+15. git branch
+-- Currently you are pointed to which branch
+
+16. git branch -M <BRANCH_NAME>
+-- To change branch Name
+
+17. git checkout <BRANCH_NAME>
+--  To switch to that branch
+
+18. git branch <BRANCH_NAME>
+-- To create the branch
 
 
 
