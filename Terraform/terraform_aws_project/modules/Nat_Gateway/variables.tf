@@ -7,9 +7,6 @@ variable "az" {
 variable "public" {
   type = list(string)
 }
-variable "private" {
-  type = list(string)
-}
 variable "vpc_id" {
   type = string
 }
