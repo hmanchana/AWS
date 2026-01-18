@@ -25,7 +25,7 @@ If you are in Mac
 -- It initializes the git in the folder you ran
 
 6. git add . - To add all files 
-   git add <file_name>
+   git add <file_name> or git add -u <PATH>
 -- To add all files from your working directory to staging area
 
 7. git commit -m "comment"
@@ -76,6 +76,11 @@ then remove the special characters and run
 18. git branch <BRANCH_NAME>
 -- To create the branch
 
+19. git checkout <commit number> --<PATH>
+-- It will restore the file
+
+20. git reflog
+-- It provides the details of commits deleted also
 
 
 
