@@ -17,7 +17,22 @@ above details you can get from your aws account in the right of your profile got
    SSO registration scopes [sso:account:access]: Just Enter
 then it will redirect to the aws account you need to allow it once you come back to terminal if account associated contains more than one we need to select one
 
-3. Provider.tf contains the 
-4. Difference between .tf vs .tfvars
--- .tf 
+3. provider.tf defines which provider and version to use; Terraform downloads the provider plugin during init, and during plan/apply that plugin converts Terraform resources into AWS API calls that create or manage infrastructure.
+ 
+4. Difference between variables.tf vs terraform.tfvars
+-- variables.tf parameterize the variables and terraform.tfvars we just assign the values
 
+5. Modules are reusable blocks which can be called from any where during the configuration and you can also call from other projects and even different modules are reusable blocks which can be called from any where during the configuration and you can also call from other projects and even from different places
+-- Always modules to be called are placed in the modules folder and to call that we need to use the module key word and source is used to place the path of the module and variables used in the module we pass the values from main of block.
+-- Output.tf is what values we use in the output.tf we can use that across other modules
+
+6. main.tf typically contains the actual infrastructure definitions (resources and module calls)
+
+7. terraform tfstate contains the details of the infra created through the terraform.
+-- Advantantage - If there is no tfstate file then terraform will not understand the what is created and what not.
+-- Disadvantages - If anyone have access to the terraform tfstate file then they can mess it up and can know the secrets so there comes the usage of the remote backend where we place the tfstate file in the s3 bucket so only people have access to the s3 bucket can access the tfstate file so we should have one s3 bucket first in AWS then when you run terraform init it will understand that tfstate need to be created renotely if you have backend.tf file.
+
+8. If we have Devops Engineer of three people if your terraform code maintained in GitHub then if any two people are doing changes at the same time to the same project then we need to use concept of state lock for that we should have the DynamoDB table already created to hold the lock. so if two people are running terraform plan at the same time then one person will hold the lock so it does not allow other person to apply at the same time
+[In a team, Terraform state locking (via DynamoDB) prevents multiple terraform apply operations from running at the same time; plan can run concurrently, but only one apply can hold the lock.]
+
+   
