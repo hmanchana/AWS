@@ -35,4 +35,6 @@ then it will redirect to the aws account you need to allow it once you come back
 8. If we have Devops Engineer of three people if your terraform code maintained in GitHub then if any two people are doing changes at the same time to the same project then we need to use concept of state lock for that we should have the DynamoDB table already created to hold the lock. so if two people are running terraform plan at the same time then one person will hold the lock so it does not allow other person to apply at the same time
 [In a team, Terraform state locking (via DynamoDB) prevents multiple terraform apply operations from running at the same time; plan can run concurrently, but only one apply can hold the lock.]
 
+9. Terraform provisioners are used to copy files or run commands either on the created resource (file, remote-exec) or on your local machine (local-exec).
+They run after the resource is created and not for regular infrastructure setup.
    
