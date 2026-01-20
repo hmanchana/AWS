@@ -1,0 +1,23 @@
+1. To Install terraform we need to go through official documentaion and check the steps for windows/mac
+-- To verify installed or not run terraform  --version
+
+2. To create infrastructure in aws terraform need to have access for the aws for that we used two options 
+-- aws cli is need to installed before then run aws configure
+   AWS Access Key ID : 
+   AWS Secret Access Key : 
+   Default region name : 
+   Default output format :
+above details you can get from your aws account in the right of your profile goto security credentials in that you will have access key or create access key get this details.
+
+-- For aws sso prerequsite is first aws cli then run below command
+   aws configure sso 
+   SSO session name (Recommended): Any Name
+   SSO start URL [None]: you can get that from IAM Access Center or you can get that from your org aws admin team or It team
+   SSO region [None]: give the region
+   SSO registration scopes [sso:account:access]: Just Enter
+then it will redirect to the aws account you need to allow it once you come back to terminal if account associated contains more than one we need to select one
+
+3. Provider.tf contains the 
+4. Difference between .tf vs .tfvars
+-- .tf 
+
