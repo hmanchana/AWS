@@ -4,7 +4,7 @@ variable "env" {
 variable "az" {
   type = list(string)
 }
-variable "public" {
+variable "public_subnet_ids" {
   type = list(string)
 }
 variable "vpc_id" {

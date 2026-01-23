@@ -37,4 +37,22 @@ then it will redirect to the aws account you need to allow it once you come back
 
 9. Terraform provisioners are used to copy files or run commands either on the created resource (file, remote-exec) or on your local machine (local-exec).
 They run after the resource is created and not for regular infrastructure setup.
-   
+
+10. Terraform workspace Terraform workspaces are used to maintain separate state file for each environment like dev,prod and you write only one main.tf for root folder then use different tfvars for each env or use maps and pass the values from variables.tf of root or .tfvars
+
+terraform init
+terraform workspace new <env_name>
+terraform workspace list
+terraform workspace 
+
+terraform workspace select dev
+terraform apply -var-file=dev.tfvars
+
+terraform workspace select prod
+terraform apply -var-file=prod.tfvars
+
+you cannot manage how state file is stored in the backend its automatic
+
+11. To coonect to your ubuntu ec2 machine from your Terminal we use ssh -i <keyfilename> ubuntu@<publicIpofmachine>
+
+12.     

@@ -12,7 +12,7 @@ resource "aws_route" "Public_Internet_Access" {
 }
 resource "aws_route_table_association" "public_subnet" {
   count = length(var.az)
-  subnet_id = var.public[count.index]
+  subnet_id = var.public_subnet_ids[count.index].id
   route_table_id = aws_route_table.public.id
 }
 resource "aws_route_table" "private" {
@@ -31,5 +31,5 @@ resource "aws_route" "Private_Nat_Access" {
 resource "aws_route_table_association" "private_subnet" {
   count = length(var.az)
   route_table_id = aws_route_table.private.id
-  subnet_id = var.private[count.index]
+  subnet_id = var.private_subnet_ids[count.index]
 }

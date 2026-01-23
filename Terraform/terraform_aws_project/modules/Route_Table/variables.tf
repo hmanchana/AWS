@@ -13,10 +13,10 @@ variable "igw_id" {
 variable "az" {
   type = list(string)
 }
-variable "public" {
+variable "public_subnet_ids" {
   type = list(string)
 }
-variable "private" {
+variable "private_subnet_ids" {
   type = list(string)
 }
 variable "nat_id" {
