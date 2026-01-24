@@ -82,7 +82,8 @@ then remove the special characters and run
 20. git reflog
 -- It provides the details of commits deleted also
 
-
+21. touch .gitignore
+-- Add the folder name example .terraform which has more space so GitHub will not allow add that .terraform/ so all the files inside that are ignored when you do git add .
 
 
 
