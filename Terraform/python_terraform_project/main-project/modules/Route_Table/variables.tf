@@ -7,10 +7,10 @@ variable "destination_cidr_block" {
 variable "gateway_id" {
   type = string
 }
-variable "public_cidr_subnet" {
+variable "public_cidr_subnet_id" {
   type = list(string)
 }
-variable "private_cidr_subnet" {
+variable "private_cidr_subnet_id" {
   type = list(string)
 }
 variable "nat_id" {

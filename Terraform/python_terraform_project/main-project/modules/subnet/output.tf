@@ -1,6 +1,6 @@
-output "public_cidr_subnet" {
+output "public_cidr_subnet_id" {
   value = aws_subnet.public[*].id
 }
-output "public_cidr_subnet" {
+output "private_cidr_subnet_id" {
   value = aws_subnet.private[*].id
 }
