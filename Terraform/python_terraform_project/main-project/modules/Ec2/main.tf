@@ -28,5 +28,5 @@ resource "aws_lb_target_group_attachment" "app_attach" {
 
   target_group_arn = var.alb_tg_arn
   target_id = aws_instance.ec2[count.index].id
-  port = 80
+  port = 5000
 }

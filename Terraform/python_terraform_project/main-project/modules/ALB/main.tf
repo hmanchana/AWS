@@ -13,7 +13,7 @@ resource "aws_lb" "app_lb" {
 #Target Group chooses the healthy server and send the traffic
 resource "aws_lb_target_group" "app_lb_tg" {
   name = "app-lb-tg-${terraform.workspace}"
-  port = 80
+  port = 5000
   protocol = "HTTP"
   vpc_id = var.vpc_id
 
