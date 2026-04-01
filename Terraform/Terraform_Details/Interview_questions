@@ -1,0 +1,25 @@
+1. How did you design your Terraform modules? What was your approach to reusability?
+
+I created modules focusing on reusability and maintainability, i did not create modules for single resource instead i grouped them logically for example in vpc module i included subnet,igw,route tables. and structured module with main.tf variables.tf output.tf
+
+parameterized the required values like CIDR_Block,subnet range, availability zones etc and passed the values from the root modules so for the repeated infrastructure for different env like test dev and prod there will not be any repeated code 
+
+also exposed only the required outputs for linking modules cleanly for example vpc_id subnet_ids are used by used by ec2 
+
+2. How did you handle different environments (dev, staging, prod) using Terraform?
+
+I handled different environments in terraform by creating different .tfvars for each env where i created stage.tfvars,dev.tfvars,prod.tfvars where i passed env specific values like cidr,subnetid's,availabilty zones, tags etc.
+
+when applying the configuration i used -var-file with file name so that there will not any repeatation of the code for each environment.
+
+3. Why did you choose S3 for remote state and DynamoDB for locking? How does the locking mechanism work?
+
+S3 is used to store the terraform state file remotely which helps with durability,versioning and through IAM you can manage access.versioning helps to restore previous version if something goes wrong
+
+DynamoDB which helps to prevent multiple people to do change at the same time to the state file. if one person run terraform apply then there will be lock entry in the DynamoDB. If other person tries to do changes then it will not allow until its locked , lock will be released once operation completes.
+
+4. What challenges did you face when moving from manual infra to Terraform?
+
+Intially it was difficult to convert manually created resources into terraform managed infrastructure after we started using the terraform import command for example we need to create ec2 then we ran the command with instanceid then tfstate file is updated but main challenge is updating .tf file with exact configuration of state file to be careful we ran terraform plan if helps it display changes if any.
+
+5. How did you manage secrets and sensitive variables in Terraform?
