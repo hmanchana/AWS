@@ -1,2 +1,3 @@
 How you will restore previous version of state file?
 if dynamodb lock is not released what will be the steps to delete it?
+Did you implement CI/CD with Terraform? If yes, how?

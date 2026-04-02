@@ -23,3 +23,102 @@ DynamoDB which helps to prevent multiple people to do change at the same time to
 Intially it was difficult to convert manually created resources into terraform managed infrastructure after we started using the terraform import command for example we need to create ec2 then we ran the command with instanceid then tfstate file is updated but main challenge is updating .tf file with exact configuration of state file to be careful we ran terraform plan if helps it display changes if any.
 
 5. How did you manage secrets and sensitive variables in Terraform?
+
+In terraform we managed sensitive information by avoiding hardcoded values in the code.
+we also used input variables and marked them as sensitive=true so that terraform does not display values in the logs or output
+and passed secret values through .tfvars file.
+In some cases we also used the aws secret manager from which retrived the values.
+
+6. How did you handle state file corruption or conflicts?
+
+as we maintained state file remotely and enabled versioning if state file is corrupted or modified then we restore the previous versions.
+
+We used DynamoDB for state locking which helped to restrict the conflicts as it allowed only one person to modify or update state file at a time.
+
+We also avoided manual changes to the state file and always verified changes using terraform plan before applying.
+
+7. How did you ensure your Terraform code was maintainable and scalable?
+
+I created modules focusing on reusability and maintainbility, where i structured the modules logically and files like main.tf variables.tf and output.tf for each module.
+
+I created .tfvars for each env and parameterized variables so that it can be passed from root module.
+
+I maintained remote state in s3 with locking so that multiple team members can work safely.
+
+For scalability, I used reusable modules and variables, which allowed me to create infrastructure for multiple environments without duplicating code.
+
+8. What’s the difference between Terraform modules and workspaces? When would you use each?
+
+Modules are used for reusability, where we group the resources and resuse them across the infra code or different environments.
+
+workspaces are used to maintain the seperate statefile for each env. for example we maintain different statfile for dev staging prod environments.
+
+9. How did you onboard your team to Terraform?
+
+I onbaorded our team to use terraform by starting with sample project and demonstartaed them by using terraform how much time it saving , we can avoid repeated tasks and manage infra structure securely through state file in s3. and i also shared the so sample code so that they can get some handson experience.
+
+10. What happens if the state file is deleted?
+
+If the state file got deleted then terraform losses the track of existing infrastructure. so when we run terraform plan or apply as terraform don't have state file then it start creating resources again which may lead to duplication or conflict.
+
+To avoid this problem if state file in s3 versioning is enabled then we can restore the previous version or we can re-import the state file by running the terraform import.
+
+11. What are terraform state commands?
+
+terraform state commands are used to manage and inspect the state file. which helps to list the resources, display particular resource delete and move them for restructureing it only manaages the change state file not infrastructure.
+
+terraform state list
+terraform state show <resource>
+terraform state mv <resource>
+terraform state rm <resource>
+
+12. How do you handle drift in Terraform?
+
+Terraform Drift means when actual infrastructure in cloud is not matching with state/config.
+to handle that first we run terraform plan if it shows any drift we run the terraform apply or update the configuration file based on need.
+
+13. What is terraform refresh?
+
+Terraform refresh is used to update the state file. when we run that it compares the real infrastructure with state file and updates if there is any drift.
+
+14. How do you update an existing resource without recreating it?
+
+To update the existing resource need to change the configuration file and run terraform apply then terraform will detect the changes by comparing it with state file and update sthe changes.
+
+15. What happens if someone manually changes infra outside Terraform?
+
+If someone manually changed infra outside terraform. then drift is created between actual infra and state file.
+then we run terraform plan if it detect the drift then we can do two things.
+
+a. if manual change is not intended. then run terraform apply and bring back the infra
+b. otherwise run the terraform refresh to update the state file and update the configuration file.
+
+16. How to manage multi cloud in terraform?
+
+Terraform supports multiple clouds where we can define them in same configuration. where we can place the aws,azure or gcp provider blocks in the single provider.tf file. using that we can create the ec2 in aws and virtual machine in azure.
+
+17. 1️⃣ State lock error
+
+Answer:
+“Sometimes I faced state lock issues when a previous Terraform run didn’t release the lock. I checked if any process was running, and if not, I used terraform force-unlock with the lock ID to release it.”
+
+2️⃣ Resource already exists error
+
+Answer:
+“I got errors when trying to create a resource that already existed manually. I resolved it by using terraform import to bring the resource into the state and then managed it through Terraform.”
+
+3️⃣ Permission / Access denied
+
+Answer:
+“I faced permission errors due to missing IAM roles or policies. I checked the error message, updated the IAM permissions, and then reran Terraform.”
+
+4️⃣ Drift / unexpected changes in plan
+
+Answer:
+“I noticed unexpected changes in terraform plan due to manual updates in AWS. I verified the changes and either reverted them using terraform apply or updated the configuration to match the actual infrastructure.”
+
+5️⃣ Incorrect variable values
+
+Answer:
+“I faced issues when wrong values were passed through tfvars, which caused failures. I fixed it by validating inputs and double-checking variable values before applying.”
+
