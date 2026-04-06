@@ -13,7 +13,7 @@ Subnet -
 	
 	People also refer it as isolated
 	Subnet splits the VPC network into smaller networks
-	Its like Rooms your Home
+	Its like Rooms in your Home
 	which helps to organize,reduce traffic,increase security and reduce latency
 
 	 Public Subnet -

@@ -1,0 +1,17 @@
+Start with this order:
+IAM
+VPC
+EC2 + ALB
+S3
+RDS
+Lambda
+CloudWatch
+ECS
+EKS
+
+For EACH service:
+What it is
+When to use it
+How it works (internals basic)
+Real-world use case
+Trade-offs

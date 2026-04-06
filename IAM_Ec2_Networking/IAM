@@ -24,3 +24,37 @@ Roles -
     Any Service or any tool need access to aws services to get some information then we create the roles , we assign policies to roles. Roles are not permanent.
 
 Not only AWS defined policies but we can also customize our own polices by writing json code 
+
+I used AWS IAM to manage access by creating custom policies and roles. For example, I assigned a role to an EC2 instance to securely access images stored in an S3 bucket without using hardcoded credentials. I also configured roles for external tools like GitHub to assume roles and interact with AWS services based on defined permissions, following the principle of least privilege.
+
+Can you explain me some scenarios how you configured IAM?
+
+First, for access management, I created IAM groups for different teams such as Developers, QA, and DevOps. I attached custom policies to each group based on their responsibilities. For example, developers were given limited EC2 permissions like start, stop, and reboot, while DevOps engineers had broader access to manage infrastructure. When a new user joins, we simply add them to the appropriate group, and they inherit the required permissions.
+
+Secondly, I worked on cross-account access. In scenarios where one AWS account needed access to resources in another account, I created an IAM role in the target account with the required permissions and configured a trust policy to allow the source account to assume that role using STS. This enables secure cross-account access without sharing credentials.
+
+Additionally, I used AWS CloudTrail for auditing and monitoring. It helps track all API activities, such as who made changes or deleted resources, which is useful for security and troubleshooting.”
+
+Any challenges you faced and how you solved?
+
+We have envs like pre-prod and prod which need peer-review to apply changes in the aws so we created common role for both plan and apply but we had one condition in pipieline that apply will be done only from main branch and in the OIDC role we sepcified subject claim as repo/* now here we identified the issue that if my account is hacked or any of team account is hacked if that condition of main branch is removed then everything will be destroyed so what i done is i created two roles one is github-actions-plan and github-actions-apply for plan subject claim will be same as we are only reading but for apply i changed subject claim to main so if any tries after removing that also it will be applied only when its done from main branch
+
+ “One challenge I faced was related to securing our CI/CD pipeline using GitHub OIDC roles. We had separate environments like pre-prod and production, and deployments required peer review before applying changes.
+
+Initially, we used a single IAM role for both Terraform plan and apply, and the trust policy allowed access using a broad subject claim like repo:*. We relied on pipeline conditions to ensure that apply only runs from the main branch.
+
+However, this introduced a security risk. If a GitHub account was compromised or the pipeline condition was bypassed, someone could potentially trigger apply from another branch and make destructive changes.
+
+To solve this, I separated the roles into two: one for plan and one for apply. The plan role retained broader access since it only performs read operations. For the apply role, I restricted the trust policy by setting the subject claim specifically to the main branch using repo:owner/repo:ref:refs/heads/main.
+
+This ensured that even if pipeline conditions were altered, AWS would only allow apply operations from the main branch, adding an extra layer of security at the IAM level.”
+
+and to add on this we have different pipeline where dev and test need to apply PR level but for pre-prod and prod we need deploy without automation when there is no automation we need to use github environments we created github-actions-plan where suject claim is * but for github-actions-apply we used subject claim as environment:<environment name> in the pipeline that environment condition is bypassed so we selected protected branches only
+
+“In addition to that, we had different deployment strategies for environments. For dev and test, we allowed automated deployments at the pull request level. However, for pre-production and production, deployments required manual approval and were not fully automated.
+
+To handle this securely, we used GitHub Environments along with OIDC. We created two roles: github-actions-plan and github-actions-apply. The plan role had a broader subject claim since it only performed read operations.
+
+For the apply role, instead of allowing all branches, we restricted access using the subject claim with environment:<environment-name>. This ensured that deployments could only happen through approved GitHub environments.
+
+Additionally, we enforced protected branches in GitHub to prevent bypassing approval workflows. This way, even if someone tried to bypass pipeline conditions, AWS IAM and GitHub environment protections together ensured that only authorized and approved deployments could be executed.”
