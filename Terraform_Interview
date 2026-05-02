@@ -1,0 +1,75 @@
+Terraform / Infrastructure as Code Questions
+1. How do you structure Terraform for enterprise scale? 
+
+I structured terraform by creating reusable modules where i logically grouped the modules for example VPC module contains all the network related resources like subnets,nacl,igw and passed the values from the root module.  
+I parameterised the values through variable and .tfvars files for each environments like test,dev,pre-prod and prod which helped to avoid changing values in multiple places and hardcoding. Secret Values are derived from secret manager or from the pipeline secrets.  
+Maintained state files in s3 which helps in enabling versioning and it can accessed only to authorised user of s3 then to avoid state file corruption we used the state locking through Dynamo DB. 
+Terraform changes go through git based workflows with pull-requests,peer review,automated plan/apply pipelines and security scanning through checkov.  This approach improves consistency, reduces configuration drift, and provides strong governance for production deployments.  Questions -  How you are doing terraform pipeline?
+ “Terraform changes are managed through GitHub Actions workflows. Since steps like init, plan, and apply are common across pipelines, we created reusable workflows to reduce code duplication and keep things maintainable. The required inputs are passed from the main workflow.
+Before running the plan, we validate infrastructure changes using Terratest. Once tests pass, we run terraform plan on non-main branches (typically in pull requests).
+We then analyse the plan output to check how many resources are being destroyed. If the destroy count exceeds a defined threshold, we raise a warning on the PR. We also post a summary of the planned changes for reviewers.
+After the PR is approved and merged into the main branch, the pipeline runs terraform apply to deploy the changes. If the apply step fails, we send Slack notifications to alert the team.
+In parallel, we run another pipeline using Checkov to scan for security issues, such as publicly exposed resources. 
+
+“We structured our reusable workflow using workflow_call, where we defined inputs such as working_directory, aws_region, and environment. We also passed secrets like the AWS account details required for authentication.
+Inside the workflow, we organised it into multiple jobs based on responsibilities. For example:
+* fetch-secrets job → fetches secrets securely from AWS using OIDC
+* plan-and-apply job → handles the Terraform execution
+In the plan-and-apply job:
+* We define the runner and required permissions
+* Checkout the repository to the runner
+* Decrypt the secrets fetched earlier
+* Extract the AWS account number and configure AWS credentials
+* Set up Terraform and initialise it
+* Select the appropriate workspace based on the environment
+Finally, based on conditions:
+* Run Terraform plan on non-main branches
+* Run Terraform apply on the main branch
+This structure keeps the workflow modular, reusable, and easy to maintain.”  “The main pipeline is triggered based on events like push and pull_request for specific branches and paths.
+Instead of defining all steps directly, we call reusable workflows using workflow_call. We pass required inputs such as the working directory, environment, and workflow ID, along with necessary secrets.
+The reusable workflow then handles the actual execution by organising jobs based on responsibilities, such as fetching secrets and running Terraform plan or apply.”
+
+
+2. How do you manage remote state securely?  I manage remote state securely by placing state file in the dedicated s3 bucket by disabling public access and enabling encryption through SSE-KMS.and define s3 bucket with least-privilege IAM roles for specific CI/CD Pipelines and authorize specific engineers.  I maintain the state locking through the Dynamo DB to avoid multiple users to update the state file at the same time it helps in avoiding state file corruption. and enable the versioning if state file is corrupted then you can recover the previous versions.  For stronger separation, I maintain separate state files or buckets for dev, test, and production environments. CloudTrail logging and bucket access monitoring help with auditability.  KMS → Customer managed keys → Create key Update KMS Key Policy "kms:Decrypt",
+"kms:Encrypt",
+"kms:GenerateDataKey",
+"kms:DescribeKey" S3 → Bucket → Properties → Default encryption → Enable → Choose SSE-KMS Ensure IAM Role and policy for users Has KMS Permissions "kms:Decrypt",
+"kms:Encrypt",
+"kms:GenerateDataKey",
+"kms:DescribeKey" Questions -  How to enable Cloud Trial and how to check? We are having modules for most of the service in aws in the baseline modules we have the cloud trial module. so we call that module from main.tf and pass the values from there. then we deploy it through the pipeline How to come out of state locking? Before removing anything, check:
+* Is a pipeline/job still running?
+* Did someone else run terraform apply?
+If yes → wait.
+terraform force-unlock 1234-5678-xxxx How to recover previous version of state file? Go to S3 → your state bucket
+Navigate to your state file (e.g. trial/terraform.tfstate)
+Click “Versions”
+Find a previous version (by date/time)
+Either:
+* Download it terraform state pull > old.tfstate terraform init
+terraform state push old.tfstate
+
+3. Why S3 backend + locking?  
+We use the s3 backend because it provides centralized remote terraform state, which helps engineers and CI/CD pipelines to 
+update one state instead for multiple states in local. It helps to maintain consistency.  
+s3 also helps in enabling versioning it helps to recover if one the file is corrupted then we can also provide least-privailage access by IAM roles who can access through pipeline and who can authorize the s3 by policy and enabling encryption.  Locking avoids state file corruption by multiple people applying changes on the same state file at the same time 
+4. How do you create reusable modules? 
+I create reusable Terraform modules by grouping related resources into logical components such as VPC, IAM, ECS, or logging. For example, a VPC module would contain subnets, route tables, NAT gateways, and security-related networking resources.
+Each module is structured with main.tf for resources, variables.tf for configurable inputs, and outputs.tf for values consumed by other modules. I keep inputs clean and parameterized to avoid hardcoding, and expose only the outputs that are needed.
+I also version modules, document usage, and validate them through CI pipelines or tests before release. Root modules then consume these shared modules with environment-specific values.
+This approach reduces code duplication, improves consistency, and makes infrastructure easier to maintain at scale.  Questions -  I also version modules, document usage, and validate them through CI pipelines or tests before release.  “We version our Terraform modules using semantic versioning (major, minor, patch). After changes are merged, we create a Git tag (e.g. v1.2.0) to mark the release. This can be done either via the GitHub Releases UI or through Git commands. The tagged version is then referenced in Terraform so consumers can use stable, versioned modules.”
+git tag v1.2.0 git push origin v1.2.0  each module is tested through terra test
+5. How do you test Terraform infrastructure?
+6. How do you handle drift detection? 
+Terraform drift occurs when the actual infrastructure differs from Terraform’s expected state based on the configuration and state file, usually due to manual changes outside Terraform.
+I detect drift primarily by running terraform plan, either manually or through scheduled CI/CD jobs, which highlights unexpected changes.
+Once detected, I first verify whether the live infrastructure was intentionally changed or whether it is unauthorized/untracked. If the infrastructure should match the Terraform code, I remediate by applying Terraform. If the manual change was valid, I update the Terraform configuration so the code becomes the source of truth.
+To reduce future drift, I restrict direct console changes through IAM controls and encourage all infrastructure changes through reviewed Terraform pipelines.
+ Questions -   I restrict direct console changes through IAM controls 
+7. How would you deploy security baselines automatically to all new AWS accounts? 
+Security baselines like guardduty security hub and backup are configured into modules we are having different providers in that providers we will configure our enabled region and through pipeline using matrix we deploy to all the accounts parallely.
+8. How do workspaces differ from separate state files?  
+Terraform workspaces create separate state files within the same backend, so environments like dev, test, and prod can use the same codebase while maintaining separate state. This is useful for lightweight environment separation.
+However, workspaces typically still share the same backend configuration, repository, and operational context, so isolation is more logical than physical.
+Separate state files or separate backends use dedicated S3 keys, buckets, or even separate AWS accounts for each environment. That provides stronger access control, reduced blast radius, and better governance—especially for production environments.
+In enterprise setups, I usually see workspaces as suitable for simpler use cases, while separate backends/accounts are preferred for critical production workloads.  terraform init -backend-config=dev.backend terraform init -backend-config=prod.backend
+   
